@@ -5,8 +5,30 @@ function Book(author, title, numOfPages, alreadyRead) {
   this.alreadyRead = alreadyRead;
 }
 
-addBookToLibrary = (bookArray, book) => {
-  bookArray.push(book);
+addBookToLibrary = (bookLibrary) => {
+  let bookInfo = $(".enter-new-book").serializeArray();
+  book = new Book(bookInfo[0].value, bookInfo[1].value, parseInt(bookInfo[2].value), bookInfo[3].value === "true" ? true : false);
+  bookLibrary.push(book);
+  addOneBook(book, bookLibrary.length - 1);
+  $('.enter-new-book').css('display', 'none');
+  return false;
+}
+
+addOneBook = (book, index) => {
+  $('body').append(`<div class="book">
+    <div class="title">${book.title}</div>
+    <div class="author">${book.author}</div>
+    <div class="info">
+      <div class="pages">${book.numOfPages}</div>
+      <div class="already-read">${book.alreadyRead}</div>
+    </div>
+    <button class="delete-button" data-index-number="${index}">Delete</button>
+  </div>`);
+}
+
+removeBook = () => {
+  console.log('something');
+  console.log($(this));
 }
 
 render = (myLibrary) => {
@@ -18,6 +40,7 @@ render = (myLibrary) => {
         <div class="pages">${myLibrary[i].numOfPages}</div>
         <div class="already-read">${myLibrary[i].alreadyRead}</div>
       </div>
+      <button class="delete-button" data-index-number="${i}">Delete</button>
     </div>`);
   }
 }
@@ -27,9 +50,14 @@ renderForm = () => {
 }
 
 $(document).ready(() => {
-  $('.new-book').click(renderForm);
-  
   let myLibrary = [];
+  $('.new-book').click(renderForm);
+  function callbackClosure(myLibrary, addBookToLibrary) {
+    return function() {
+      return addBookToLibrary(myLibrary);
+    }
+  }
+  $('.enter-new-book').submit(callbackClosure(myLibrary, addBookToLibrary));
   
   book1 = new Book("Writer One", "First Book", 299, true);
   book2 = new Book("Writer Two", "Second Book", 199, false);
@@ -39,5 +67,6 @@ $(document).ready(() => {
   myLibrary.push(book2); 
   myLibrary.push(book3); 
 
-  render(myLibrary);  
+  render(myLibrary);
+  $('.delete-button').click(removeBook);
 });
