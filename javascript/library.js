@@ -9,29 +9,53 @@ addBookToLibrary = (bookLibrary) => {
   let bookInfo = $(".enter-new-book").serializeArray();
   book = new Book(bookInfo[0].value, bookInfo[1].value, parseInt(bookInfo[2].value), bookInfo[3].value === "true" ? true : false);
   bookLibrary.push(book);
-  addOneBook(book, bookLibrary.length - 1);
-  $('.enter-new-book').css('display', 'none');
+  render(bookLibrary);
   return false;
 }
 
-addOneBook = (book, index) => {
-  $('body').append(`<div class="book">
-    <div class="title">${book.title}</div>
-    <div class="author">${book.author}</div>
-    <div class="info">
-      <div class="pages">${book.numOfPages}</div>
-      <div class="already-read">${book.alreadyRead}</div>
-    </div>
-    <button class="delete-button" data-index-number="${index}">Delete</button>
-  </div>`);
-}
+// addOneBook = (book, index) => {
+//   $('body').append(`<div class="book">
+//     <div class="title">${book.title}</div>
+//     <div class="author">${book.author}</div>
+//     <div class="info">
+//       <div class="pages">${book.numOfPages}</div>
+//       <div class="already-read">${book.alreadyRead}</div>
+//     </div>
+//     <button class="delete-button" data-index-number="${index}">Delete</button>
+//   </div>`);
+// }
 
-removeBook = () => {
-  console.log('something');
-  console.log($(this));
+removeBook = (event, myLibrary) => {
+  console.log($(event.target).data('index-number'));
+
+  myLibrary.splice($(event.target).data('index-number'), 1);
+  render(myLibrary);
 }
 
 render = (myLibrary) => {
+  $('body').html(`
+  <button class="new-book" type="button">New book</button>
+
+  <form class="enter-new-book">
+    <label for="author">Author:</label><br>
+    <input type="text" id="author" name="author"><br>
+
+    <label for="title">Title:</label><br>
+    <input type="text" id="title" name="title"><br>
+    
+    <label for="num-of-pages">Number of pages:</label><br>
+    <input type="text" id="num-of-pages" name="num-of-pages"><br>
+    
+    <label for="title">Already read:</label><br>
+    <input type="radio" id="true" name="already-read" value="true">
+    <label for="true">True</label>
+    <input type="radio" id="false" name="already-read" value="false">
+    <label for="false">False</label>
+
+    <input name="submit" type="submit" value="Submit">
+  </form>`);
+
+
   for (let i = 0; i < myLibrary.length; i++) {
     $('body').append(`<div class="book">
       <div class="title">${myLibrary[i].title}</div>
@@ -43,6 +67,22 @@ render = (myLibrary) => {
       <button class="delete-button" data-index-number="${i}">Delete</button>
     </div>`);
   }
+
+   
+  function callbackClosure(myLibrary, addBookToLibrary) {
+    return function() {
+      return addBookToLibrary(myLibrary);
+    }
+  }
+
+  $('.new-book').click(renderForm);
+  $('.enter-new-book').submit(callbackClosure(myLibrary, addBookToLibrary));
+  
+  callbackClosureDelete = (event) => {
+    removeBook(event, myLibrary);
+  }
+  
+  $('.delete-button').click(callbackClosureDelete);
 }
 
 renderForm = () => {
@@ -51,13 +91,7 @@ renderForm = () => {
 
 $(document).ready(() => {
   let myLibrary = [];
-  $('.new-book').click(renderForm);
-  function callbackClosure(myLibrary, addBookToLibrary) {
-    return function() {
-      return addBookToLibrary(myLibrary);
-    }
-  }
-  $('.enter-new-book').submit(callbackClosure(myLibrary, addBookToLibrary));
+ 
   
   book1 = new Book("Writer One", "First Book", 299, true);
   book2 = new Book("Writer Two", "Second Book", 199, false);
@@ -66,7 +100,8 @@ $(document).ready(() => {
   myLibrary.push(book1); 
   myLibrary.push(book2); 
   myLibrary.push(book3); 
-
+  
   render(myLibrary);
-  $('.delete-button').click(removeBook);
+
+  
 });
