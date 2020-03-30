@@ -33,31 +33,9 @@ changeReadStatus = (event, firebase) => {
 }
 
 render = (myLibrary, firebase) => {
-
-  let htmlString = `
-  <button class="new-book" type="button">New book</button>
-
-  <form class="enter-new-book">
-    <label for="author">Author:</label><br>
-    <input type="text" id="author" name="author"><br>
-
-    <label for="title">Title:</label><br>
-    <input type="text" id="title" name="title"><br>
-    
-    <label for="num-of-pages">Number of pages:</label><br>
-    <input type="text" id="num-of-pages" name="num-of-pages"><br>
-    
-    <label for="title">Already read:</label><br>
-    <input type="radio" id="true" name="already-read" value="true">
-    <label for="true">True</label>
-    <input type="radio" id="false" name="already-read" value="false">
-    <label for="false">False</label>
-
-    <input name="submit" type="submit" value="Submit">
-  </form>`;
+  let htmlString = '';
   
   if (myLibrary != null) {
-    htmlString += '<div id="book-wrapper">'
     for (let i = 0; i < myLibrary.length; i++) {
       if (myLibrary[i] == null) {
         continue;
@@ -73,12 +51,10 @@ render = (myLibrary, firebase) => {
       <button class="delete-button" data-index-number="${i}">Delete</button>
       <button class="read-button" data-index-number="${i}">${myLibrary[i].readStatus ? "Mark as unread" : "Mark as read"}</button>
       </div>`;
-      // $('body').append();
     }
-    htmlString += '</div>'
   }
 
-  $('body').html(htmlString);
+  $('.book-wrapper').html(htmlString);
    
   function callbackClosure(myLibrary, firebase, addBookToLibrary) {
     return function() {

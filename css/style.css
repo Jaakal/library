@@ -12,7 +12,20 @@ body {
   position: relative;
 }
 
-#book-wrapper {
+.main-headline {
+  text-transform: uppercase;
+  font-family: 'Amatic SC', cursive;
+  font-size: 60px;
+}
+
+.divider {
+  max-width: 600px;
+  width: 100%;
+  margin: 30px 0;
+  border-top: 1px solid black;
+}
+
+.book-wrapper {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -74,7 +87,44 @@ body {
 }
 
 .new-book {
+  position: relative;
+  width: 200px;
+  font-size: 20px;
+  border: none;
+  border-radius: 4px;
+  color: #FFFFFF;
+  padding: 10px 20px;
+  text-align: center;
   text-transform: uppercase;
+  white-space: nowrap;
+  background-color: #4CAF50;
+  -webkit-transition-duration: 0.4s;
+          transition-duration: 0.4s;
+  text-decoration: none;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.new-book:after {
+  content: "";
+  background: #f1f1f1;
+  display: block;
+  position: absolute;
+  padding-top: 300%;
+  padding-left: 350%;
+  margin-left: -20px !important;
+  margin-top: -120%;
+  opacity: 0;
+  -webkit-transition: all 0.8s;
+  transition: all 0.8s;
+}
+
+.new-book:active:after {
+  padding: 0;
+  margin: 0;
+  opacity: 1;
+  -webkit-transition: 0s;
+  transition: 0s;
 }
 
 .new-book:hover {
