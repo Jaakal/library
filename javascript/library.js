@@ -1,50 +1,40 @@
-function Book(author, title, numOfPages, alreadyRead) {
+function Book(author, title, numOfPages, readStatus) {
   this.author = author;
   this.title = title;
   this.numOfPages = numOfPages;
-  this.alreadyRead = alreadyRead;
+  this.readStatus = readStatus;
 }
 
 Book.prototype.toggleRead = function(){
-  this.alreadyRead = !this.alreadyRead;
+  this.readStatus = !this.readStatus;
 }
 
-addBookToLibrary = (bookLibrary) => {
+addBookToLibrary = (bookLibrary, firebase) => {
   let bookInfo = $(".enter-new-book").serializeArray();
-  book = new Book(bookInfo[0].value, bookInfo[1].value, parseInt(bookInfo[2].value), bookInfo[3].value === "true" ? true : false);
-  bookLibrary.push(book);
-  render(bookLibrary);
+  let index = bookLibrary == null ? 0 : bookLibrary.length;
+  let book = new Book(bookInfo[0].value, bookInfo[1].value, parseInt(bookInfo[2].value), bookInfo[3].value === "true" ? true : false);
+  
+  firebase.database().ref('books/' + index).set(book);
+  
   return false;
 }
 
-// addOneBook = (book, index) => {
-//   $('body').append(`<div class="book">
-//     <div class="title">${book.title}</div>
-//     <div class="author">${book.author}</div>
-//     <div class="info">
-//       <div class="pages">${book.numOfPages}</div>
-//       <div class="already-read">${book.alreadyRead}</div>
-//     </div>
-//     <button class="delete-button" data-index-number="${index}">Delete</button>
-//   </div>`);
-// }
-
-removeBook = (event, myLibrary) => {
-  console.log($(event.target).data('index-number'));
-
-  myLibrary.splice($(event.target).data('index-number'), 1);
-  render(myLibrary);
+removeBook = (event, firebase) => {
+  firebase.database().ref('books/' + $(event.target).data('index-number')).remove();
 }
 
-changeReadStatus = (event, myLibrary) => {
-  book = myLibrary[$(event.target).data('index-number')];
-  console.log(book);
-  book.toggleRead();
-  render(myLibrary);
+changeReadStatus = (event, firebase) => {
+  firebase.database().ref('books/' + $(event.target).data('index-number')).once('value').then( function(snapshot) {
+    let book = new Book;
+    Object.assign(book, snapshot.val())
+    book.toggleRead();
+    firebase.database().ref('books/' + $(event.target).data('index-number')).set(book);
+  });
 }
 
-render = (myLibrary) => {
-  $('body').html(`
+render = (myLibrary, firebase) => {
+
+  let htmlString = `
   <button class="new-book" type="button">New book</button>
 
   <form class="enter-new-book">
@@ -64,37 +54,47 @@ render = (myLibrary) => {
     <label for="false">False</label>
 
     <input name="submit" type="submit" value="Submit">
-  </form>`);
+  </form>`;
   
-  for (let i = 0; i < myLibrary.length; i++) {
-    $('body').append(`<div class="book">
+  if (myLibrary != null) {
+    htmlString += '<div id="book-wrapper">'
+    for (let i = 0; i < myLibrary.length; i++) {
+      if (myLibrary[i] == null) {
+        continue;
+      }
+
+      htmlString += `<div class="book">
       <div class="title">${myLibrary[i].title}</div>
       <div class="author">${myLibrary[i].author}</div>
       <div class="info">
-        <div class="pages">${myLibrary[i].numOfPages}</div>
-        <div class="already-read">${myLibrary[i].alreadyRead}</div>
+      <div class="pages">${myLibrary[i].numOfPages}</div>
+      <div class="already-read">${myLibrary[i].readStatus}</div>
       </div>
       <button class="delete-button" data-index-number="${i}">Delete</button>
-      <button class="read-button" data-index-number="${i}">${myLibrary[i].alreadyRead ? "Mark as unread" : "Mark as read"}</button>
-    </div>`);
+      <button class="read-button" data-index-number="${i}">${myLibrary[i].readStatus ? "Mark as unread" : "Mark as read"}</button>
+      </div>`;
+      // $('body').append();
+    }
+    htmlString += '</div>'
   }
 
+  $('body').html(htmlString);
    
-  function callbackClosure(myLibrary, addBookToLibrary) {
+  function callbackClosure(myLibrary, firebase, addBookToLibrary) {
     return function() {
-      return addBookToLibrary(myLibrary);
+      return addBookToLibrary(myLibrary, firebase);
     }
   }
 
   $('.new-book').click(renderForm);
-  $('.enter-new-book').submit(callbackClosure(myLibrary, addBookToLibrary));
+  $('.enter-new-book').submit(callbackClosure(myLibrary, firebase, addBookToLibrary));
   
   callbackClosureDelete = (event) => {
-    removeBook(event, myLibrary);
+    removeBook(event, firebase);
   }
 
   callbackClosureRead = (event) => {
-    changeReadStatus(event, myLibrary);
+    changeReadStatus(event, firebase);
   }
   
   $('.delete-button').click(callbackClosureDelete);
@@ -106,17 +106,6 @@ renderForm = () => {
 }
 
 $(document).ready(() => {
-  let myLibrary = [];
- 
-  
-  book1 = new Book("Writer One", "First Book", 299, true);
-  book2 = new Book("Writer Two", "Second Book", 199, false);
-  book3 = new Book("Writer One", "Third Book", 999, false);
-  
-  myLibrary.push(book1); 
-  myLibrary.push(book2); 
-  myLibrary.push(book3); 
-
   const firebaseConfig = {
     apiKey: "AIzaSyCGUXTnbhijDmdUm5T1B-4uIBMRBKk6KkU",
     authDomain: "library-31ed8.firebaseapp.com",
@@ -129,11 +118,10 @@ $(document).ready(() => {
   };
   
   firebase.initializeApp(firebaseConfig);
-  const dbRefOject = firebase.database().ref().child('myLibrary');
+  
+  const dbRefOject = firebase.database().ref().child('books');
+  
   dbRefOject.on('value', snap => {
-    myLibrary = snap.val();
-    render(myLibrary);
-    console.log(myLibrary);
+    render(snap.val(), firebase);
   });
-  render(myLibrary);
 });
