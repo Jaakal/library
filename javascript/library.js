@@ -65,8 +65,7 @@ render = (myLibrary) => {
 
     <input name="submit" type="submit" value="Submit">
   </form>`);
-
-
+  
   for (let i = 0; i < myLibrary.length; i++) {
     $('body').append(`<div class="book">
       <div class="title">${myLibrary[i].title}</div>
@@ -117,8 +116,24 @@ $(document).ready(() => {
   myLibrary.push(book1); 
   myLibrary.push(book2); 
   myLibrary.push(book3); 
-  
-  render(myLibrary);
 
+  const firebaseConfig = {
+    apiKey: "AIzaSyCGUXTnbhijDmdUm5T1B-4uIBMRBKk6KkU",
+    authDomain: "library-31ed8.firebaseapp.com",
+    databaseURL: "https://library-31ed8.firebaseio.com",
+    projectId: "library-31ed8",
+    storageBucket: "library-31ed8.appspot.com",
+    messagingSenderId: "282261117872",
+    appId: "1:282261117872:web:c2124a8508d1f98e305475",
+    measurementId: "G-D260PYVPK6"
+  };
   
+  firebase.initializeApp(firebaseConfig);
+  const dbRefOject = firebase.database().ref().child('myLibrary');
+  dbRefOject.on('value', snap => {
+    myLibrary = snap.val();
+    render(myLibrary);
+    console.log(myLibrary);
+  });
+  render(myLibrary);
 });
