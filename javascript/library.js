@@ -5,6 +5,10 @@ function Book(author, title, numOfPages, alreadyRead) {
   this.alreadyRead = alreadyRead;
 }
 
+Book.prototype.toggleRead = function(){
+  this.alreadyRead = !this.alreadyRead;
+}
+
 addBookToLibrary = (bookLibrary) => {
   let bookInfo = $(".enter-new-book").serializeArray();
   book = new Book(bookInfo[0].value, bookInfo[1].value, parseInt(bookInfo[2].value), bookInfo[3].value === "true" ? true : false);
@@ -29,6 +33,13 @@ removeBook = (event, myLibrary) => {
   console.log($(event.target).data('index-number'));
 
   myLibrary.splice($(event.target).data('index-number'), 1);
+  render(myLibrary);
+}
+
+changeReadStatus = (event, myLibrary) => {
+  book = myLibrary[$(event.target).data('index-number')];
+  console.log(book);
+  book.toggleRead();
   render(myLibrary);
 }
 
@@ -65,6 +76,7 @@ render = (myLibrary) => {
         <div class="already-read">${myLibrary[i].alreadyRead}</div>
       </div>
       <button class="delete-button" data-index-number="${i}">Delete</button>
+      <button class="read-button" data-index-number="${i}">${myLibrary[i].alreadyRead ? "Mark as unread" : "Mark as read"}</button>
     </div>`);
   }
 
@@ -81,8 +93,13 @@ render = (myLibrary) => {
   callbackClosureDelete = (event) => {
     removeBook(event, myLibrary);
   }
+
+  callbackClosureRead = (event) => {
+    changeReadStatus(event, myLibrary);
+  }
   
   $('.delete-button').click(callbackClosureDelete);
+  $('.read-button').click(callbackClosureRead);
 }
 
 renderForm = () => {
