@@ -10,6 +10,7 @@ Book.prototype.toggleRead = function(){
 }
 
 addBookToLibrary = (bookLibrary, firebase) => {
+  $(".enter-new-book").css("display", "none");
   let bookInfo = $(".enter-new-book").serializeArray();
   let index = bookLibrary == null ? 0 : bookLibrary.length;
   let book = new Book(bookInfo[0].value, bookInfo[1].value, parseInt(bookInfo[2].value), bookInfo[3].value === "true" ? true : false);
