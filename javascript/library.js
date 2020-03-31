@@ -10,27 +10,14 @@ Book.prototype.toggleRead = function(){
 }
 
 addBookToLibrary = (event, bookLibrary, firebase) => {
-  // $(this).submit(function() {
-  //     return false;
-  // });
-  // return true;
-
-  // event.preventDefault();
-
   $(".add-book").css("display", "none");
-  // $(".enter-new-book").css("display", "none");
-  
-  let bookInfo = $(".enter-new-book").serializeArray();
-  
-  
-
-  // console.log(bookInfo);
-  
+  let title = document.getElementById('title').value;
+  let author = document.getElementById('author').value
+  let pages = parseInt(document.getElementById('num-of-pages').value);
+  let readStatus = document.getElementById('true').checked ? true : false;
   let index = bookLibrary == null ? 0 : bookLibrary.length;
-  let book = new Book(bookInfo[0].value, bookInfo[1].value, parseInt(bookInfo[2].value), bookInfo[3].value === "true" ? true : false);
-  
-  // console.log(book);
-  
+  let book = new Book(title, author, pages, readStatus);
+
   firebase.database().ref('books/' + index).set(book);
   
   return false;
@@ -51,38 +38,7 @@ changeReadStatus = (event, firebase) => {
 }
 
 render = (myLibrary, firebase) => {
-  let htmlString = `<h1 class="main-headline">Library</h1>
-  
-  <div class="divider"></div>
-  
-  <button class="new-book" type="button">Add a New Book</button>
-  
-  <div class="add-book">
-    <div class="title">Library</div>
-    <div class="divider"></div>
-    <div class="sub-title">Add a New Book</div>
-
-    <form class="fields enter-new-book">
-      <input type="text" id="title" name="title" placeholder="Title">
-      <input type="text" id="author" name="author" placeholder="Author">
-      <input type="text" id="num-of-pages" name="num-of-pages" placeholder="Pages count">
-
-      <div class="read-status">
-        <label class="radio-button-title" for="title">Read status</label>
-        
-        <div class="radio-button-wrapper">
-          <input type="radio" id="true" name="already-read" value="true">
-          <label for="true">True</label>
-          
-          <input type="radio" id="false" name="already-read" value="false">
-          <label for="false">False</label>
-        </div>
-      </div>
-
-      <input class="button" name="submit" type="submit" value="Add Book">
-    </form>
-  </div>
-  <div class="book-wrapper">`;
+  let htmlString = ``;
   
   if (myLibrary != null) {
     for (let i = 0; i < myLibrary.length; i++) {
@@ -105,22 +61,7 @@ render = (myLibrary, firebase) => {
 
   htmlString += '</div>';
 
-  // $('.book-wrapper').html(htmlString);
-  $('body').html(htmlString);
-   
-  // function callbackClosure(myLibrary, firebase, addBookToLibrary) {
-  //   return function() {
-  //     return addBookToLibrary(myLibrary, firebase);
-  //   }
-  // }
-
-  callbackClosure = (event) => {
-    addBookToLibrary(event, myLibrary, firebase);
-  }
-
-  $('.new-book').click(renderForm);
-  // $('.enter-new-book').submit(callbackClosure(myLibrary, firebase, addBookToLibrary));
-  $('.enter-new-book').submit(callbackClosure);
+  $('.book-wrapper').html(htmlString);
   
   callbackClosureDelete = (event) => {
     removeBook(event, firebase);
@@ -130,13 +71,18 @@ render = (myLibrary, firebase) => {
     changeReadStatus(event, firebase);
   }
   
+  callbackClosure = (event) => {
+    addBookToLibrary(event, myLibrary, firebase);
+  }
+
+  $('.submit').off('click');
+  $('.submit').click(callbackClosure)
   $('.delete-button').click(callbackClosureDelete);
   $('.read-button').click(callbackClosureRead);
 }
 
 renderForm = () => {
   $('.add-book').css('display', 'flex');
-  // $('.enter-new-book').css('display', 'flex');
 }
 
 $(document).ready(() => {
@@ -158,4 +104,6 @@ $(document).ready(() => {
   dbRefOject.on('value', snap => {
     render(snap.val(), firebase);
   });
+
+  $('.new-book').click(renderForm);
 });
