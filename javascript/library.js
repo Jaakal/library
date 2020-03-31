@@ -1,6 +1,6 @@
-function Book(author, title, numOfPages, readStatus) {
-  this.author = author;
+function Book(title, author, numOfPages, readStatus) {
   this.title = title;
+  this.author = author;
   this.numOfPages = numOfPages;
   this.readStatus = readStatus;
 }
@@ -9,18 +9,36 @@ Book.prototype.toggleRead = function(){
   this.readStatus = !this.readStatus;
 }
 
-addBookToLibrary = (bookLibrary, firebase) => {
-  $(".enter-new-book").css("display", "none");
+addBookToLibrary = (event, bookLibrary, firebase) => {
+  // $(this).submit(function() {
+  //     return false;
+  // });
+  // return true;
+
+  event.preventDefault();
+
+  $(".add-book").css("display", "none");
+  
   let bookInfo = $(".enter-new-book").serializeArray();
+  
+  
+
+  console.log(bookInfo);
+  
   let index = bookLibrary == null ? 0 : bookLibrary.length;
   let book = new Book(bookInfo[0].value, bookInfo[1].value, parseInt(bookInfo[2].value), bookInfo[3].value === "true" ? true : false);
   
+  
+  console.log(book);
+  
   firebase.database().ref('books/' + index).set(book);
   
+  // 
   return false;
 }
 
 removeBook = (event, firebase) => {
+  event.preventDefault();
   firebase.database().ref('books/' + $(event.target).data('index-number')).remove();
 }
 
@@ -57,14 +75,19 @@ render = (myLibrary, firebase) => {
 
   $('.book-wrapper').html(htmlString);
    
-  function callbackClosure(myLibrary, firebase, addBookToLibrary) {
-    return function() {
-      return addBookToLibrary(myLibrary, firebase);
-    }
+  // function callbackClosure(myLibrary, firebase, addBookToLibrary) {
+  //   return function() {
+  //     return addBookToLibrary(myLibrary, firebase);
+  //   }
+  // }
+
+  callbackClosure = (event) => {
+    addBookToLibrary(event, myLibrary, firebase);
   }
 
   $('.new-book').click(renderForm);
-  $('.enter-new-book').submit(callbackClosure(myLibrary, firebase, addBookToLibrary));
+  // $('.enter-new-book').submit(callbackClosure(myLibrary, firebase, addBookToLibrary));
+  $('.enter-new-book').submit(callbackClosure);
   
   callbackClosureDelete = (event) => {
     removeBook(event, firebase);
@@ -79,7 +102,7 @@ render = (myLibrary, firebase) => {
 }
 
 renderForm = () => {
-  $('.enter-new-book').css('display', 'block');
+  $('.add-book').css('display', 'flex');
 }
 
 $(document).ready(() => {
