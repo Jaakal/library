@@ -1,4 +1,4 @@
-# Project Title
+# Library
 
 This is a Library project where users can add books, mark them as read and delete the books.
 
