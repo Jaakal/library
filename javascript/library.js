@@ -12,7 +12,6 @@ Book.prototype.toggleRead = function toggleRead() {
 };
 
 function addBookToLibrary(event, bookLibrary, firebase) {
-  // $('.add-book').css({'display': 'none', 'opacity': '0'});
   $('.add-book').removeClass('display');
   const title = document.getElementById('title').value;
   const author = document.getElementById('author').value;
@@ -98,9 +97,7 @@ function render(myLibrary, firebase) {
 }
 
 const renderForm = () => {
-  // $('.add-book').css({'display': 'flex', 'opacity': '1'});
   $('.add-book').addClass('display');
-
 };
 
 $(document).ready(() => {
