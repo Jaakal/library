@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Library</title>
+  <link href="https://fonts.googleapis.com/css?family=Amatic+SC&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-database.js"></script>
+  <script src="javascript/library.js"></script>
+</head>
+<body>
+  <h1 class="main-headline">Library</h1>
+  
+  <div class="divider"></div>
+  
+  <button class="new-book" type="button">Add a New Book</button>
+  
+  <div class="add-book">
+    <div class="title">Library</div>
+    <div class="divider"></div>
+    <div class="sub-title">Add a New Book</div>
+
+    <div class="fields enter-new-book">
+      <input type="text" id="title" name="title" placeholder="Title">
+      <input type="text" id="author" name="author" placeholder="Author">
+      <input type="text" id="num-of-pages" name="num-of-pages" placeholder="Pages count">
+
+      <div class="read-status">
+        <label class="radio-button-title" for="title">Read status</label>
+        
+        <div class="radio-button-wrapper">
+          <input type="radio" id="true" name="already-read" value="true">
+          <label for="true">True</label>
+          
+          <input type="radio" id="false" name="already-read" value="false">
+          <label for="false">False</label>
+        </div>
+      </div>
+
+      <button class="submit button">Add Book</button>
+    </div>
+  </div>
+
+  <div class="book-wrapper"></div>
+</body>
+</html>
