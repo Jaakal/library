@@ -57,7 +57,6 @@ body {
 
 .new-book {
   position: relative;
-  width: 200px;
   font-size: 20px;
   border: none;
   border-radius: 4px;
@@ -95,18 +94,6 @@ body {
   &:hover {
     cursor: pointer;
   }
-}
-
-.enter-new-book {
-  // display: none;
-  // position: absolute;
-  // top: 100px;
-  // left: 50%;
-  // padding: 25px;
-  // border: 1px solid black;
-  // background-color: white;
-  // transform: translateX(-50%);
-  // will-change: opacity;
 }
 
 // Form

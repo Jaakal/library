@@ -1,4 +1,4 @@
-const $ = window.$;
+const { $ } = window;
 
 function Book(title, author, numOfPages, readStatus) {
   this.title = title;
@@ -11,35 +11,35 @@ Book.prototype.toggleRead = function toggleRead() {
   this.readStatus = !this.readStatus;
 };
 
-function addBookToLibrary (event, bookLibrary, firebase) {
-  $(".add-book").css("display", "none");
-  const title = document.getElementById("title").value;
-  const author = document.getElementById("author").value;
-  const pages = parseInt(document.getElementById("num-of-pages").value);
-  const readStatus = document.getElementById("true").checked ? true : false;
+function addBookToLibrary(event, bookLibrary, firebase) {
+  $('.add-book').css('display', 'none');
+  const title = document.getElementById('title').value;
+  const author = document.getElementById('author').value;
+  const pages = Number(document.getElementById('num-of-pages').value);
+  const readStatus = !!document.getElementById('true').checked;
   const index = bookLibrary == null ? 0 : bookLibrary.length;
   const book = new Book(title, author, pages, readStatus);
 
   firebase
     .database()
-    .ref('books/' + index)
+    .ref(`books/${index}`)
     .set(book);
 
   return false;
-};
+}
 
-function removeBook (event, firebase) {
+function removeBook(event, firebase) {
   event.preventDefault();
   firebase
     .database()
     .ref(`books/${$(event.target).data('index-number')}`)
     .remove();
-};
+}
 
-function changeReadStatus (event, firebase) {
+function changeReadStatus(event, firebase) {
   firebase
     .database()
-    .ref(`books/ + ${$(event.target).data('index-number')}`)
+    .ref(`books/${$(event.target).data('index-number')}`)
     .once('value')
     .then((snapshot) => {
       const book = new Book();
@@ -50,9 +50,9 @@ function changeReadStatus (event, firebase) {
         .ref(`books/${$(event.target).data('index-number')}`)
         .set(book);
     });
-};
+}
 
-function render (myLibrary, firebase) {
+function render(myLibrary, firebase) {
   let htmlString = '';
 
   if (myLibrary != null) {
@@ -67,8 +67,8 @@ function render (myLibrary, firebase) {
         </div>
         <button class="delete-button" data-index-number="${i}">Delete</button>
         <button class="read-button" data-index-number="${i}">${
-          myLibrary[i].readStatus ? "Mark as unread" : "Mark as read"
-        }</button>
+  myLibrary[i].readStatus ? 'Mark as unread' : 'Mark as read'
+}</button>
         </div>`;
       }
     }
@@ -78,15 +78,15 @@ function render (myLibrary, firebase) {
 
   $('.book-wrapper').html(htmlString);
 
-  callbackClosureDelete = (event) => {
+  const callbackClosureDelete = (event) => {
     removeBook(event, firebase);
   };
 
-  callbackClosureRead = (event) => {
+  const callbackClosureRead = (event) => {
     changeReadStatus(event, firebase);
   };
 
-  callbackClosure = (event) => {
+  const callbackClosure = (event) => {
     addBookToLibrary(event, myLibrary, firebase);
   };
 
@@ -94,10 +94,10 @@ function render (myLibrary, firebase) {
   $('.submit').click(callbackClosure);
   $('.delete-button').click(callbackClosureDelete);
   $('.read-button').click(callbackClosureRead);
-};
+}
 
-renderForm = () => {
-  $(".add-book").css("display", "flex");
+const renderForm = () => {
+  $('.add-book').css('display', 'flex');
 };
 
 $(document).ready(() => {
@@ -112,6 +112,8 @@ $(document).ready(() => {
     measurementId: 'G-D260PYVPK6',
   };
 
+
+  /* eslint-disable no-undef */
   firebase.initializeApp(firebaseConfig);
 
   const dbRefOject = firebase.database().ref().child('books');
@@ -119,6 +121,7 @@ $(document).ready(() => {
   dbRefOject.on('value', (snap) => {
     render(snap.val(), firebase);
   });
+  /* eslint-enable no-undef */
 
   $('.new-book').click(renderForm);
 });
