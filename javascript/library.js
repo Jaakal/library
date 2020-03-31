@@ -15,25 +15,24 @@ addBookToLibrary = (event, bookLibrary, firebase) => {
   // });
   // return true;
 
-  event.preventDefault();
+  // event.preventDefault();
 
   $(".add-book").css("display", "none");
+  // $(".enter-new-book").css("display", "none");
   
   let bookInfo = $(".enter-new-book").serializeArray();
   
   
 
-  console.log(bookInfo);
+  // console.log(bookInfo);
   
   let index = bookLibrary == null ? 0 : bookLibrary.length;
   let book = new Book(bookInfo[0].value, bookInfo[1].value, parseInt(bookInfo[2].value), bookInfo[3].value === "true" ? true : false);
   
-  
-  console.log(book);
+  // console.log(book);
   
   firebase.database().ref('books/' + index).set(book);
   
-  // 
   return false;
 }
 
@@ -52,7 +51,38 @@ changeReadStatus = (event, firebase) => {
 }
 
 render = (myLibrary, firebase) => {
-  let htmlString = '';
+  let htmlString = `<h1 class="main-headline">Library</h1>
+  
+  <div class="divider"></div>
+  
+  <button class="new-book" type="button">Add a New Book</button>
+  
+  <div class="add-book">
+    <div class="title">Library</div>
+    <div class="divider"></div>
+    <div class="sub-title">Add a New Book</div>
+
+    <form class="fields enter-new-book">
+      <input type="text" id="title" name="title" placeholder="Title">
+      <input type="text" id="author" name="author" placeholder="Author">
+      <input type="text" id="num-of-pages" name="num-of-pages" placeholder="Pages count">
+
+      <div class="read-status">
+        <label class="radio-button-title" for="title">Read status</label>
+        
+        <div class="radio-button-wrapper">
+          <input type="radio" id="true" name="already-read" value="true">
+          <label for="true">True</label>
+          
+          <input type="radio" id="false" name="already-read" value="false">
+          <label for="false">False</label>
+        </div>
+      </div>
+
+      <input class="button" name="submit" type="submit" value="Add Book">
+    </form>
+  </div>
+  <div class="book-wrapper">`;
   
   if (myLibrary != null) {
     for (let i = 0; i < myLibrary.length; i++) {
@@ -73,7 +103,10 @@ render = (myLibrary, firebase) => {
     }
   }
 
-  $('.book-wrapper').html(htmlString);
+  htmlString += '</div>';
+
+  // $('.book-wrapper').html(htmlString);
+  $('body').html(htmlString);
    
   // function callbackClosure(myLibrary, firebase, addBookToLibrary) {
   //   return function() {
@@ -103,6 +136,7 @@ render = (myLibrary, firebase) => {
 
 renderForm = () => {
   $('.add-book').css('display', 'flex');
+  // $('.enter-new-book').css('display', 'flex');
 }
 
 $(document).ready(() => {
