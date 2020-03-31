@@ -96,7 +96,7 @@ body {
   text-align: center;
   text-transform: uppercase;
   white-space: nowrap;
-  background-color: #4CAF50;
+  background: radial-gradient(circle, #24cfaa, #26c5a3, #28bb9c, #29b294, #2aa88d);
   -webkit-transition-duration: 0.4s;
           transition-duration: 0.4s;
   text-decoration: none;
@@ -127,11 +127,14 @@ body {
 }
 
 .new-book:hover {
+  background: radial-gradient(circle, #2fdbb6, #32d6b3, #32c9a8, #36c7a7, #38bb9f);
   cursor: pointer;
 }
 
 .add-book {
-  display: none;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
@@ -148,8 +151,9 @@ body {
   font-weight: 300;
   color: white;
   background: radial-gradient(circle, #555555, #535353, #505050, #4e4e4e, #4c4c4c);
-  -webkit-transform: translateX(-50%);
-          transform: translateX(-50%);
+  -webkit-transform: translate(-50%, -1000px);
+          transform: translate(-50%, -1000px);
+  opacity: 0;
 }
 
 .add-book .fields {
@@ -280,5 +284,13 @@ body {
 
 .add-book .button:active {
   background: radial-gradient(circle, #1da88a, #1ea084, #229c82, #23947b, #238d76);
+}
+
+.display {
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+  -webkit-transition: opacity 0.2s ease-in 0.4s;
+  transition: opacity 0.2s ease-in 0.4s;
+  opacity: 1;
 }
 /*# sourceMappingURL=style.css.map */

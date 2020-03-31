@@ -65,7 +65,7 @@ body {
   text-align: center;
   text-transform: uppercase;
   white-space: nowrap;
-  background-color: #4CAF50;
+  background: radial-gradient(circle, #24cfaa, #26c5a3, #28bb9c, #29b294, #2aa88d);
   transition-duration: 0.4s;
   text-decoration: none;
   overflow: hidden;
@@ -92,6 +92,7 @@ body {
   }
 
   &:hover {
+    background: radial-gradient(circle, #2fdbb6, #32d6b3, #32c9a8, #36c7a7, #38bb9f);
     cursor: pointer;
   }
 }
@@ -99,7 +100,8 @@ body {
 // Form
 
 .add-book {
-  display: none;
+  // display: none;
+  display: flex;
   flex-direction: column;
   align-items: center;
   position: absolute;
@@ -111,7 +113,9 @@ body {
   font-weight: 300;
   color: white;
   background: radial-gradient(circle, #555555, #535353, #505050, #4e4e4e, #4c4c4c);
-  transform: translateX(-50%);
+  transform: translate(-50%, -1000px);
+  opacity: 0;
+  // transition: opacity 1s ease-in 0.8s;
 
   .fields {
     display: flex;
@@ -205,4 +209,11 @@ body {
       background: radial-gradient(circle, #1da88a, #1ea084, #229c82, #23947b, #238d76);
     }
   }
+}
+
+.display {
+  // display: flex;
+  transform: translateX(-50%);
+  transition: opacity 0.2s ease-in 0.4s;
+  opacity: 1;
 }
